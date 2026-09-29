@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Ani-CLI + MAL
+Comment=Browse and play anime with MyAnimeList auto-sync
+Exec=/usr/local/bin/run-ani-cli
+Icon=video-player
+Terminal=false
+Categories=AudioVideo;Video;Utility;
+StartupNotify=true
+StartupWMClass=ani-cli
+Keywords=anime;cli;ani-cli;stream;mal;myanimelist;trackma;

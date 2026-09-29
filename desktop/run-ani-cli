@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# ============================================================
+#  run-ani-cli: Terminal launcher for Ani-CLI with MAL Sync
+# ============================================================
+
+export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+
+# Detect terminal emulator
+if command -v foot &>/dev/null; then
+    foot --app-id=ani-cli -f "monospace:size=15" -W 105x32 -T "Ani-CLI + MAL Sync" \
+        bash -c "$HOME/.local/bin/ani-track; echo ''; echo '--- Session Finished ---'; read -p 'Press Enter to exit...' "
+elif command -v kitty &>/dev/null; then
+    kitty --title "Ani-CLI + MAL Sync" \
+        bash -c "$HOME/.local/bin/ani-track; echo ''; echo '--- Session Finished ---'; read -p 'Press Enter to exit...' "
+elif command -v alacritty &>/dev/null; then
+    alacritty --title "Ani-CLI + MAL Sync" -e \
+        bash -c "$HOME/.local/bin/ani-track; echo ''; echo '--- Session Finished ---'; read -p 'Press Enter to exit...' "
+elif command -v gnome-terminal &>/dev/null; then
+    gnome-terminal --title="Ani-CLI + MAL Sync" -- \
+        bash -c "$HOME/.local/bin/ani-track; echo ''; echo '--- Session Finished ---'; read -p 'Press Enter to exit...' "
+elif command -v xterm &>/dev/null; then
+    xterm -title "Ani-CLI + MAL Sync" -e \
+        bash -c "$HOME/.local/bin/ani-track; echo ''; echo '--- Session Finished ---'; read -p 'Press Enter to exit...' "
+else
+    # Fallback to direct execution
+    "$HOME/.local/bin/ani-track"
+fi

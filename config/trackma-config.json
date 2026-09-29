@@ -1,0 +1,27 @@
+{
+  "player": "mpv",
+  "searchdir": [
+    "~/Videos"
+  ],
+  "tracker_enabled": true,
+  "tracker_update_wait_s": 60,
+  "tracker_update_close": true,
+  "tracker_update_prompt": false,
+  "tracker_not_found_prompt": false,
+  "tracker_interval": 10,
+  "tracker_process": "mpv",
+  "tracker_ignore_not_next": false,
+  "autoretrieve": "always",
+  "autosend": "always",
+  "autosend_minutes": 5,
+  "autosend_size": 1,
+  "autosend_at_exit": true,
+  "library_autoscan": true,
+  "library_full_path": false,
+  "scan_whole_list": false,
+  "debug_disable_lock": true,
+  "auto_status_change": true,
+  "auto_status_change_if_scored": true,
+  "auto_date_change": true,
+  "tracker_type": "auto"
+}

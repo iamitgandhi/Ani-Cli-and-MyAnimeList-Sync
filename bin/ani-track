@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# ============================================================
+#  ani-track: ani-cli + Trackma MAL Sync Wrapper
+# ============================================================
+#
+#  How it works:
+#    1. Pre-syncs your MAL list via Trackma before playing
+#    2. Launches ani-cli normally, which streams via mpv
+#    3. mpv automatically loads trackma_hook.lua
+#    4. Lua script tracks playback completion (triggers at 90%)
+#    5. Uses Trackma's fuzzy title matcher to map English -> Romaji
+#    6. Automatically pushes queued updates to MyAnimeList on exit
+#
+#  Usage:
+#    ani-track [any ani-cli arguments]
+#  Examples:
+#    ani-track "bleach"
+#    ani-track -c
+#    ani-track -q 1080 "one piece"
+# ============================================================
+
+set -e
+
+export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+
+# Colors
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+# Check dependencies
+if ! command -v trackma &>/dev/null; then
+    echo -e "${RED}[ani-track]${NC} Trackma not found. Please install Trackma (e.g., via pipx: pipx install trackma)"
+    exit 1
+fi
+
+if ! command -v ani-cli &>/dev/null; then
+    echo -e "${RED}[ani-track]${NC} ani-cli not found. Please ensure ani-cli is installed and in your PATH."
+    exit 1
+fi
+
+# ---- Pre-sync MAL list so trackma has fresh local cache ----
+echo -e "${CYAN}[ani-track]${NC} Syncing MyAnimeList data..."
+printf 'retrieve\n' | trackma -a 1 2>&1 | grep -E "Downloading|Error" | while read -r line; do
+    echo -e "${CYAN}[ani-track]${NC} $line"
+done || true
+
+echo -e "${GREEN}[ani-track]${NC} ✓ MAL synced."
+echo -e "${CYAN}[ani-track]${NC} mpv will auto-update MAL when video reaches 90% completion."
+echo ""
+
+# ---- Final sync on exit ----
+cleanup() {
+    echo ""
+    echo -e "${CYAN}[ani-track]${NC} Finalizing MAL sync..."
+    printf 'send\n' | trackma -a 1 2>/dev/null | grep -E "Processing|Updating|Updated" | while read -r line; do
+        echo -e "${CYAN}[ani-track]${NC} $line"
+    done || true
+    echo -e "${GREEN}[ani-track]${NC} ✓ Done! MAL is up to date."
+}
+trap cleanup EXIT INT TERM
+
+# ---- Run ani-cli (mpv's trackma_hook.lua handles tracking) ----
+ani-cli "$@"
